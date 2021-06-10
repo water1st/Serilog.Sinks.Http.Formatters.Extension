@@ -6,6 +6,7 @@
     <PackageProjectUrl>https://github.com/water1st/Serilog.Sinks.Http.Formatters.Extension</PackageProjectUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
