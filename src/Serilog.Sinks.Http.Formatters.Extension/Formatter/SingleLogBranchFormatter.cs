@@ -1,34 +1,16 @@
-﻿using Serilog.Events;
-using Serilog.Formatting;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
 namespace Serilog.Sinks.Http.BatchFormatters
 {
-    public class SingleLogBatchFormatter : IBatchFormatter
+    public class SingleLogBatchFormatter : DefaultBatchFormatter, IBatchFormatter
     {
         private readonly static IBatchFormatter instance = new SingleLogBatchFormatter();
         public static IBatchFormatter Instance => instance;
 
-        public void Format(IEnumerable<LogEvent> logEvents, ITextFormatter formatter, TextWriter output)
-        {
-            if (logEvents == null) throw new ArgumentNullException(nameof(logEvents));
-            if (formatter == null) throw new ArgumentNullException(nameof(formatter));
-
-            IEnumerable<string> formattedLogEvents = logEvents.Select(
-                logEvent =>
-                {
-                    var writer = new StringWriter();
-                    formatter.Format(logEvent, writer);
-                    return writer.ToString();
-                });
-
-            Format(formattedLogEvents, output);
-        }
-
-        public void Format(IEnumerable<string> logEvents, TextWriter output)
+        public override void Format(IEnumerable<string> logEvents, TextWriter output)
         {
             if (logEvents == null) throw new ArgumentNullException(nameof(logEvents));
             if (output == null) throw new ArgumentNullException(nameof(output));
@@ -41,22 +23,9 @@ namespace Serilog.Sinks.Http.BatchFormatters
             }
             else
             {
-                output.Write("{\"events\":[");
-                var delimStart = false;
-                foreach (var logEvent in logEvents)
-                {
-                    if (string.IsNullOrWhiteSpace(logEvent))
-                        continue;
-
-                    if (delimStart)
-                        output.Write(',');
-
-                    output.Write(logEvent);
-                    delimStart = true; ;
-                }
-
-                output.Write("]}");
+                base.Format(logEvents, output);
             }
         }
+
     }
 }
